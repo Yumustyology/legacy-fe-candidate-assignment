@@ -1,0 +1,17 @@
+{
+  "watch": [
+    "server/**/*",
+    "shared/**/*"
+  ],
+  "ext": "ts,js,json",
+  "ignore": [
+    "node_modules/**/*",
+    "dist/**/*",
+    "client/**/*"
+  ],
+  "delay": 1000,
+  "restartable": "rs",
+  "env": {
+    "NODE_ENV": "development"
+  }
+}

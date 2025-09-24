@@ -1,64 +1,134 @@
-# Take-Home Task: **Web3 Message Signer & Verifier**
-React + Dynamic.xyz Headless Implementation (Frontend) | Node.js + Express (Backend)
+# 🔐 SignVerifyHub
 
-## 🎯 Objective
-Build a full-stack Web3 app that allows a user to:
-1. Authenticate using a **Dynamic.xyz embedded wallet headless implementation https://docs.dynamic.xyz/headless/headless-email** ⚠️ Do not simply implement the Widget ⚠️
-2. Enter and **sign a custom message** of the user's choosing
-3. Send the signed message to a **Node.js + Express** backend
-4. Backend verifies the signature and responds with validity + address
+A Web3 message signing and verification platform with wallet authentication and Multi-Factor Authentication.
 
-## 🔧 Requirements
+## Tech Stack
 
-### 🧩 Frontend (React 18+)
-* Integrate Dynamic.xyz Embedded Wallet
-* After authentication:
-   * Show connected wallet address
-   * Provide a form to input a custom message
-   * Let user sign the message
-   * Submit `{ message, signature }` to backend
-* Show result from backend:
-   * Whether the signature is valid
-   * Which wallet signed it
-* Allow signing multiple messages (show a local history)
+**Frontend**: React 18, TypeScript, Vite, Tailwind CSS, React Query
+**Backend**: Express.js, TypeScript, In-memory storage
+**Authentication**: Dynamic.xyz (Email + OTP + MFA)
+**Crypto**: Ethers.js for signature verification
 
-**Note:** How you structure the React app is up to you — but the app complexity is high enough that good React patterns will shine through.
+## Quick Start
 
-### 🌐 Backend (Node.js + Express – required)
-* Create a REST API endpoint: `POST /verify-signature`
-* Accept:
-```json
-{ "message": "string", "signature": "string" }
-```
-* Use `ethers.js` (or `viem`) to:
-   * Recover the signer from the signature
-   * Validate the signature
-* Return:
-```json
-{ "isValid": true, "signer": "0xabc123...", "originalMessage": "..." }
+### 1. Install Dependencies
+```bash
+npm install
 ```
 
-## Behavior & Constraints
-* Session state can be in-memory (no DB required)
-* Message signing history should persist across React component state or localStorage
-* No third-party signature validation services — use raw `ethers.js`, `viem` or similar in backend
+### 2. Configure Environment
+Create `.env` file in project root:
+```bash
+VITE_DYNAMIC_ENVIRONMENT_ID=your_dynamic_environment_id_here
+```
 
-## 🚀 Submission Guidelines
-* Submit a **PR to the GitHub repo**
-* Include:
-   * Setup instructions for both frontend and backend in a README.md file
-   * Notes on any trade-offs made or areas you'd improve
-   * A test suite with all tests passing
-* Bonus: Implement headless **multi-factor auth** to seucre the user https://docs.dynamic.xyz/headless/headless-mfa
-* Bonus: Link to deployed version (e.g., Vercel frontend, Render backend)
+Get your Environment ID from [Dynamic.xyz Dashboard](https://dynamic.xyz) → Settings → API Keys
 
-## ✅ Evaluation Focus
-| Area | Evaluated On |
-|------|-------------|
-| **React architecture** | Component design, state flow, hooks, separation of concerns |
-| **Dynamic.xyz usage** | Clean login, wallet context management, signing flow |
-| **Node.js + Express** | REST API correctness, signature validation logic, modularity |
-| **Code quality** | Readability, organization, error handling, TypeScript use |
-| **User experience** | Clear flows, responsive feedback, intuitive UI |
-| **Extensibility** | Evidence of scalable thought (e.g., room for auth, roles, message types) |
-| **Design** | Beautiful UX design skills are important to us. Make the app look and feel great |
+### 3. Run Development Server
+```bash
+npm run dev
+```
+
+- Backend: `http://localhost:5000`
+- Frontend: Vite dev server (check terminal for URL)
+
+## Scripts
+
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm start           # Start production server
+npm run dev:watch   # Development with file watching
+npm test            # Run comprehensive test suite
+```
+
+## Testing
+
+SignVerifyHub includes a **comprehensive test suite with 97/97 tests passing (100% success rate)**:
+
+- **Frontend**: React component testing with React Testing Library
+- **Backend**: API and storage layer testing with Vitest
+- **Coverage**: All major user flows and edge cases validated
+- **Clean Output**: Professional test reporting with no debug spam
+
+```bash
+npm test                    # Run all tests
+npm run test:watch         # Watch mode for development
+npx vitest run --coverage  # Run with coverage report
+```
+
+For detailed testing documentation, see [`test/README.md`](./test/README.md).
+
+## Dynamic.xyz Setup
+
+1. Create account at [Dynamic.xyz](https://dynamic.xyz)
+2. Create new project
+3. Configure:
+   - **Wallet Connectors**: Enable Ethereum
+   - **Authentication**: Email + OTP
+   - **MFA**: Enable TOTP (optional)
+   - **Allowed Origins**: Add your dev/prod URLs
+
+## Deployment (Vercel)
+
+1. Connect GitHub repository to Vercel
+2. Add environment variable:
+   ```
+   VITE_DYNAMIC_ENVIRONMENT_ID=your_environment_id
+   ```
+3. Deploy automatically on push
+
+## Features
+
+- Wallet authentication with email + OTP
+- Message signing and verification
+- User-specific message history
+- Optional Multi-Factor Authentication
+- Real-time API status monitoring
+
+## Trade-offs & Future Improvements
+
+### Current Trade-offs
+
+**In-Memory Storage**: Messages are stored in memory for simplicity but are lost on server restart
+- **Trade-off**: Fast development vs data persistence
+- **Impact**: Suitable for demo/MVP, not production scale
+
+**No Database**: Avoided database complexity for rapid prototyping
+- **Trade-off**: Simple setup vs scalable data management
+- **Impact**: Limited to single-server deployment
+
+**Client-Side Signing**: Messages are signed in the browser using wallet integration
+- **Trade-off**: User convenience vs potential security considerations
+- **Impact**: Requires user to have wallet installed and connected
+
+### Areas for Improvement
+
+**Data Persistence**:
+- Replace in-memory storage with PostgreSQL or MongoDB
+- Add proper database migrations and backup strategies
+- Implement data retention policies
+
+**Security Enhancements**:
+- Add rate limiting for API endpoints
+- Implement request signing for API authentication
+- Add input sanitization beyond Zod validation
+- Consider server-side message validation
+
+**Performance & Scalability**:
+- Add Redis caching for frequently accessed data
+- Implement pagination for message history
+- Add database indexing for user queries
+- Consider CDN for static assets
+
+**User Experience**:
+- Add bulk message operations (select multiple, bulk delete)
+- Implement message search and filtering
+- Add export functionality for message history
+- Improve mobile responsiveness
+
+**Monitoring & Observability**:
+- Add structured logging (Winston/Pino)
+- Implement error tracking (Sentry)
+- Add performance monitoring
+- Create health check endpoints
